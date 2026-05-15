@@ -30,6 +30,7 @@ class Task {
 void showAllTasks(const std::vector<Task> &tasks);
 void addTask(std::vector<Task> &tasks, std::string description);
 void markTaskCompleted(std::vector<Task> &tasks);
+void markTaskIncomplete(std::vector<Task> &tasks);
 
 int main() {
     std::vector<Task> tasks;
@@ -40,8 +41,9 @@ int main() {
         std::cout <<"\n<-------------------->\n";
         std::cout <<"1. Add Task\n";
         std::cout <<"2. Show All Tasks\n";
-        std::cout <<"3. Mark task as completedd\n";
-        std::cout <<"4. exit\n";
+        std::cout <<"3. Mark task as completed\n";
+        std::cout <<"4. Mark task as incomplete\n";
+        std::cout <<"5. exit\n";
         std::cin >>choice;
         switch (choice) {
             case 1: {
@@ -61,17 +63,25 @@ int main() {
                     std::cout <<"No tasks yet. Please add a task.\n" << std::endl;
                     break;
                 }
-                showAllTasks(tasks);
                 markTaskCompleted(tasks);
                 
                 break;
             }
             case 4: {
+                if (tasks.empty()) {
+                    std::cout <<"No tasks yet. Please add a task.\n" << std::endl;
+                    break;
+                }
+                markTaskIncomplete(tasks);
+
+                break;
+            }
+            case 5: {
                 running = false;
                 break;
             }
             default: {
-                std::cout <<"Invalid choice. Please select one of the valid options (1 - 4)\n";
+                std::cout <<"Invalid choice. Please select one of the valid options (1 - 5)\n";
             }
         }
     }
@@ -97,6 +107,7 @@ void markTaskCompleted(std::vector<Task> &tasks) {
     int choice;
     do {
         std::cout <<"\nWhich task number have you completed? (enter the task number): \n";
+        showAllTasks(tasks);
         std::cin >>choice;
         if (choice < 1 || choice > tasks.size()) {
             std::cout <<"Invalid task was selected. Please select a number indicating your chosen task.\n";
@@ -105,7 +116,22 @@ void markTaskCompleted(std::vector<Task> &tasks) {
     while (choice < 1 || choice > tasks.size());
 
     size_t chosenTask = choice - 1;
-
     tasks[chosenTask].markCompleted();
+    showAllTasks(tasks);
+}
+void markTaskIncomplete(std::vector<Task> &tasks) {
+    int choice;
+    do {
+        std::cout <<"\nWhich task do you want to mark as incompleted? \n";
+        showAllTasks(tasks);
+        std::cin >>choice;
+        if (choice < 1 || choice > tasks.size()) {
+            std::cout <<"Invalid task was selected. Please select a number indicating your chosen task.\n";
+        }
+    }
+    while (choice < 1 || choice > tasks.size());
+
+    size_t chosenTask = choice - 1;
+    tasks[chosenTask].markIncomplete();
     showAllTasks(tasks);
 }
