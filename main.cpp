@@ -31,13 +31,14 @@ void showAllTasks(const std::vector<Task> &tasks);
 void addTask(std::vector<Task> &tasks, std::string description);
 void markTaskCompleted(std::vector<Task> &tasks);
 void markTaskIncomplete(std::vector<Task> &tasks);
+int getValidIndex(const std::vector<Task> &tasks);
 
 int main() {
     std::vector<Task> tasks;
     bool running = true;
     int choice;
     while (running) {
-        std::cout <<" <Menu (1-4 choices)> ";
+        std::cout <<" <Menu (1-5 choices)> ";
         std::cout <<"\n<-------------------->\n";
         std::cout <<"1. Add Task\n";
         std::cout <<"2. Show All Tasks\n";
@@ -73,7 +74,6 @@ int main() {
                     break;
                 }
                 markTaskIncomplete(tasks);
-
                 break;
             }
             case 5: {
@@ -104,34 +104,29 @@ void addTask(std::vector<Task> &tasks, std::string description) {
     tasks.emplace_back(description);
 }
 void markTaskCompleted(std::vector<Task> &tasks) {
-    int choice;
-    do {
-        std::cout <<"\nWhich task number have you completed? (enter the task number): \n";
-        showAllTasks(tasks);
-        std::cin >>choice;
-        if (choice < 1 || choice > tasks.size()) {
-            std::cout <<"Invalid task was selected. Please select a number indicating your chosen task.\n";
-        }
-    }
-    while (choice < 1 || choice > tasks.size());
-
-    size_t chosenTask = choice - 1;
+    int chosenTask = getValidIndex(tasks);
     tasks[chosenTask].markCompleted();
     showAllTasks(tasks);
 }
 void markTaskIncomplete(std::vector<Task> &tasks) {
-    int choice;
-    do {
-        std::cout <<"\nWhich task do you want to mark as incompleted? \n";
-        showAllTasks(tasks);
-        std::cin >>choice;
-        if (choice < 1 || choice > tasks.size()) {
-            std::cout <<"Invalid task was selected. Please select a number indicating your chosen task.\n";
-        }
-    }
-    while (choice < 1 || choice > tasks.size());
-
-    size_t chosenTask = choice - 1;
+    int chosenTask = getValidIndex(tasks);
     tasks[chosenTask].markIncomplete();
     showAllTasks(tasks);
+}
+
+int getValidIndex(const std::vector<Task> &tasks) {
+    int choice;
+    int taskSize = static_cast<int>(tasks.size());
+    do {
+        std::cout <<"\nPlease select a task number to apply the changes: \n";
+        showAllTasks(tasks);
+        std::cin >>choice;
+        if (choice < 1 || choice > taskSize) {
+            std::cout <<"Invalid/non-existent task was selected. "
+                        "Please select a number indicating your chosen task.\n";
+        }
+    }
+    while (choice < 1 || choice > taskSize);
+
+    return choice - 1;
 }
