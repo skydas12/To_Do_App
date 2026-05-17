@@ -31,20 +31,22 @@ void showAllTasks(const std::vector<Task> &tasks);
 void addTask(std::vector<Task> &tasks, std::string description);
 void markTaskCompleted(std::vector<Task> &tasks);
 void markTaskIncomplete(std::vector<Task> &tasks);
-int getValidIndex(const std::vector<Task> &tasks);
+int getValidTaskIndex(const std::vector<Task> &tasks);
+void deleteTask(std::vector<Task> &tasks);
 
 int main() {
     std::vector<Task> tasks;
     bool running = true;
     int choice;
     while (running) {
-        std::cout <<" <Menu (1-5 choices)> ";
+        std::cout <<" <Menu (1-6 choices)> ";
         std::cout <<"\n<-------------------->\n";
         std::cout <<"1. Add Task\n";
         std::cout <<"2. Show All Tasks\n";
         std::cout <<"3. Mark task as completed\n";
         std::cout <<"4. Mark task as incomplete\n";
-        std::cout <<"5. exit\n";
+        std::cout <<"5. Delete task\n";
+        std::cout <<"6. exit\n";
         std::cin >>choice;
         switch (choice) {
             case 1: {
@@ -65,7 +67,6 @@ int main() {
                     break;
                 }
                 markTaskCompleted(tasks);
-                
                 break;
             }
             case 4: {
@@ -77,11 +78,19 @@ int main() {
                 break;
             }
             case 5: {
+                if (tasks.empty()) {
+                    std::cout <<"No tasks yet. Please add a task.\n";
+                    break;
+                }
+                deleteTask(tasks);
+                break;
+            }
+            case 6: {
                 running = false;
                 break;
             }
             default: {
-                std::cout <<"Invalid choice. Please select one of the valid options (1 - 5)\n";
+                std::cout <<"Invalid choice. Please select one of the valid options (1 - 6)\n";
             }
         }
     }
@@ -104,21 +113,20 @@ void addTask(std::vector<Task> &tasks, std::string description) {
     tasks.emplace_back(description);
 }
 void markTaskCompleted(std::vector<Task> &tasks) {
-    int chosenTask = getValidIndex(tasks);
-    tasks[chosenTask].markCompleted();
+    int chosenIndex = getValidTaskIndex(tasks);
+    tasks[chosenIndex].markCompleted();
     showAllTasks(tasks);
 }
 void markTaskIncomplete(std::vector<Task> &tasks) {
-    int chosenTask = getValidIndex(tasks);
-    tasks[chosenTask].markIncomplete();
+    int chosenIndex = getValidTaskIndex(tasks);
+    tasks[chosenIndex].markIncomplete();
     showAllTasks(tasks);
 }
-
-int getValidIndex(const std::vector<Task> &tasks) {
+int getValidTaskIndex(const std::vector<Task> &tasks) {
     int choice;
     int taskSize = static_cast<int>(tasks.size());
     do {
-        std::cout <<"\nPlease select a task number to apply the changes: \n";
+        std::cout <<"\nPlease select a task: \n";
         showAllTasks(tasks);
         std::cin >>choice;
         if (choice < 1 || choice > taskSize) {
@@ -129,4 +137,9 @@ int getValidIndex(const std::vector<Task> &tasks) {
     while (choice < 1 || choice > taskSize);
 
     return choice - 1;
+}
+void deleteTask(std::vector<Task> &tasks) {
+    int chosenIndex = getValidTaskIndex(tasks);
+    tasks.erase(tasks.begin() + chosenIndex);
+    showAllTasks(tasks);
 }
