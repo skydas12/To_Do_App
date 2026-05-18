@@ -47,7 +47,12 @@ int main() {
         std::cout <<"4. Mark task as incomplete\n";
         std::cout <<"5. Delete task\n";
         std::cout <<"6. exit\n";
-        std::cin >>choice;
+        if (!(std::cin >> choice)) {
+            std::cin.clear();
+            std::cin.ignore(10000,'\n');
+            std::cout <<"Please select one of the valid options, input has to be a number (1 - 6)\n";
+            continue;
+        }
         switch (choice) {
             case 1: {
                 std::string description;
